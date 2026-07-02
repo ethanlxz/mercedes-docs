@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MEME Technical Brief | Mercedes Enhanced Mobility Engine</title>
+    <meta
+      name="description"
+      content="A mobile-friendly technical brief for MEME, the Mercedes Enhanced Mobility Engine hackathon prototype."
+    />
+    <link rel="stylesheet" href="./styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="MEME technical brief home">
+        <span class="brand-badge">MEME</span>
+        <span>Technical Brief</span>
+      </a>
+
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#summary">Summary</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#diagrams">Diagrams</a>
+        <a href="#features">Features</a>
+        <a href="#flows">Flows</a>
+        <a href="#evidence">Evidence</a>
+      </nav>
+
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-menu">
+        <span></span>
+        <span></span>
+        <span class="sr-only">Menu</span>
+      </button>
+    </header>
+
+    <nav id="mobile-menu" class="mobile-nav" aria-label="Mobile navigation">
+      <a href="#summary">Summary</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#diagrams">Diagrams</a>
+      <a href="#features">Features</a>
+      <a href="#flows">Flows</a>
+      <a href="#evidence">Evidence</a>
+      <a href="#stack">Stack</a>
+    </nav>
+
+    <main id="main">
+      <section id="top" class="hero section-shell">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Mercedes Enhanced Mobility Engine</p>
+          <h1>One agent connects route planning, fatigue safety, and EV battery decisions.</h1>
+          <p class="hero-lede">
+            MEME is a FastAPI and vanilla JavaScript prototype that turns isolated car signals into one
+            route-aware recommendation. The driver still confirms every action.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-action" href="#architecture">See architecture</a>
+            <a class="secondary-action" href="#features">Review technical modules</a>
+          </div>
+        </div>
+
+        <aside class="hero-visual reveal" aria-label="Prototype preview">
+          <img
+            src="./assets/road-trip-overview.png"
+            alt="MEME road trip planner showing a route from Kuala Lumpur to Penang with recommendation cards"
+          />
+          <div class="hero-metrics" aria-label="Key technical facts">
+            <div>
+              <strong>5</strong>
+              <span>API groups</span>
+            </div>
+            <div>
+              <strong>3</strong>
+              <span>intelligence domains</span>
+            </div>
+            <div>
+              <strong>1</strong>
+              <span>shared route state</span>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="summary" class="section-shell">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Judge Summary</p>
+          <h2>The technical contribution is not another map UI. It is the coordination layer.</h2>
+          <p>
+            MEME keeps trip planning, live fatigue detection, battery prediction, and driver preferences
+            in one decision context. That lets the app recommend a useful next step instead of showing
+            disconnected warnings.
+          </p>
+        </div>
+
+        <div class="summary-grid">
+          <article class="info-card reveal">
+            <span>01</span>
+            <h3>Central AI Agent</h3>
+            <p>
+              A LangGraph workflow loads the active route, fatigue score, EV battery state, and preference
+              memory before producing a driver-facing recommendation.
+            </p>
+          </article>
+          <article class="info-card reveal">
+            <span>02</span>
+            <h3>Route-Aware Decisions</h3>
+            <p>
+              Rest stops and chargers are searched ahead on the route, then ranked by actual drive impact,
+              safety priority, Google place data, and remembered preferences.
+            </p>
+          </article>
+          <article class="info-card reveal">
+            <span>03</span>
+            <h3>Human Confirmation</h3>
+            <p>
+              The system never silently changes the trip. It presents one clear action, such as Rest there
+              or Charge there, and updates the route only after acceptance.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="architecture" class="section-shell">
+        <div class="section-heading reveal">
+          <p class="eyebrow">System Architecture</p>
+          <h2>Frontend signals flow through FastAPI into agent, model, and maps services.</h2>
+          <p>
+            The prototype is intentionally inspectable: focused browser modules call clear backend
+            endpoints, and complex decisions live in state-machine workflows.
+          </p>
+        </div>
+
+        <div class="system-flow reveal" aria-label="MEME architecture flow">
+          <div class="flow-stage">
+            <span>Input</span>
+            <h3>Driver + Vehicle Context</h3>
+            <p>Natural-language trips, active route ID, webcam fatigue frames, EV battery level.</p>
+          </div>
+          <div class="flow-stage">
+            <span>API</span>
+            <h3>FastAPI Gateway</h3>
+            <p><code>/api/trip-planner</code>, <code>/api/central-agent</code>, <code>/api/battery</code>, <code>/ws/fatigue/detect</code>.</p>
+          </div>
+          <div class="flow-stage flow-stage-core">
+            <span>Reasoning</span>
+            <h3>LangGraph Agent</h3>
+            <p>Loads route state, evaluates risk, searches candidates, builds one recommendation.</p>
+          </div>
+          <div class="flow-stage">
+            <span>Services</span>
+            <h3>Models + Maps</h3>
+            <p>DeepSeek, XGBoost, MediaPipe FaceMesh, Google Routes, Places, and Matrix APIs.</p>
+          </div>
+          <div class="flow-stage">
+            <span>Output</span>
+            <h3>Driver Action</h3>
+            <p>Route card, rest modal, charging plan, updated route polyline, preference memory.</p>
+          </div>
+        </div>
+
+        <div class="architecture-notes">
+          <article class="note reveal">
+            <strong>Shared state</strong>
+            <p>
+              A road trip registers through <code>/api/central-agent/active-road-trip</code>, so later
+              fatigue and charging requests reason over the same active route.
+            </p>
+          </article>
+          <article class="note reveal">
+            <strong>Lower latency</strong>
+            <p>
+              The agent reuses route context instead of forcing fatigue, charging, and preferences to
+              rebuild journey state independently.
+            </p>
+          </article>
+          <article class="note reveal">
+            <strong>Extensible design</strong>
+            <p>
+              New vehicle signals can become graph inputs without rewriting the map UI or duplicating
+              routing logic.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="diagrams" class="section-shell technical-diagrams">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Technical Diagrams</p>
+          <h2>The original system diagrams, now folded into the v2 brief.</h2>
+          <p>
+            These are the detailed diagrams from the first MEME docs page, covering the central
+            agent, route lifecycle, full stack, trip planner, battery model, and fatigue intervention
+            flow.
+          </p>
+        </div>
+
+        <div class="diagram-stack">
+          <article class="diagram-block reveal">
+            <div class="diagram-copy">
+              <span class="diagram-label">Central Agent</span>
+              <h3>Shared decision point for route context, fatigue, charging, and preferences.</h3>
+              <p>
+                Road-trip state is registered once, then reused by fatigue and charging recommendations
+                so the driver sees one contextual action instead of disconnected alerts.
+              </p>
+            </div>
+            <div class="diagram-shell" aria-label="Central AI Agent architecture diagram">
+              <div class="mermaid">
+flowchart TB
+    UI["Frontend feature modules"]
+    Active["POST /api/central-agent/active-road-trip"]
+    State["state.py active route store"]
+    Fatigue["POST /api/central-agent/fatigue/recommendation"]
+    Charging["POST /api/central-agent/charging/recommendation"]
+    Memory["memory_service.py preference memory"]
+    Graph["central_agent/graph.py LangGraph"]
+    Rest["rest_stop_service.py route-relative rest stops"]
+    ChargeSvc["charging_service.py charger decision"]
+    Battery["battery/model_service.py XGBoost trip model"]
+    Places["Google Places"]
+    Routes["Google Routes"]
+    Modal["Driver modal: rest there / not now"]
+    ChargePanel["Charging plan panel"]
+
+    UI --> Active --> State
+    UI --> Fatigue --> Graph
+    UI --> Charging --> ChargeSvc
+    Graph --> Memory
+    Graph --> State
+    Graph --> Rest --> Places
+    Graph --> Modal
+    ChargeSvc --> State
+    ChargeSvc --> Battery
+    ChargeSvc --> Places
+    ChargeSvc --> ChargePanel
+    Modal --> Routes
+    ChargePanel --> Routes
+              </div>
+            </div>
+          </article>
+
+          <article class="diagram-block reveal">
+            <div class="diagram-copy">
+              <span class="diagram-label">Overall Architecture</span>
+              <h3>Vanilla frontend, FastAPI routers, model services, and external intelligence.</h3>
+              <p>
+                The browser modules call clear API groups, while LangGraph, XGBoost, MediaPipe, DeepSeek,
+                and Google Maps services handle specialized reasoning.
+              </p>
+            </div>
+            <div class="diagram-shell" aria-label="Overall technical architecture diagram">
+              <div class="mermaid">
+flowchart LR
+    subgraph Browser["Vanilla frontend"]
+        Shell["index.html cockpit shell"]
+        API["js/api.js fetch client"]
+        Map["core-map.js Google Maps drawing"]
+        Features["features: trip, road-trip, battery, fatigue"]
+    end
+
+    subgraph FastAPI["FastAPI backend"]
+        Main["main.py router mounting"]
+        Maps["routers/maps.py"]
+        Trip["routers/trip_planner.py"]
+        Agent["routers/central_agent.py"]
+        BatteryRouter["routers/battery.py"]
+        FatigueRouter["routers/fatigue.py WebSocket"]
+    end
+
+    subgraph Intelligence["Reasoning and model layer"]
+        TripGraph["trip_planner/graph.py"]
+        AgentGraph["central_agent/graph.py"]
+        BatteryModel["battery/model_service.py"]
+        FatigueDetector["fatigue/detector.py"]
+        Memory["services/memory_service.py"]
+    end
+
+    subgraph External["External services"]
+        Google["Google Maps Platform"]
+        DeepSeek["DeepSeek via ChatOpenAI"]
+        Webcam["Browser webcam"]
+    end
+
+    Shell --> API
+    Features --> API
+    Map --> Google
+    API --> Main
+    Main --> Maps --> Google
+    Main --> Trip --> TripGraph
+    Main --> Agent --> AgentGraph
+    Main --> BatteryRouter --> BatteryModel
+    Main --> FatigueRouter --> FatigueDetector
+    TripGraph --> DeepSeek
+    TripGraph --> Google
+    AgentGraph --> Google
+    AgentGraph --> Memory
+    BatteryModel --> Memory
+    Webcam --> FatigueRouter
+              </div>
+            </div>
+          </article>
+
+          <article class="diagram-block reveal">
+            <div class="diagram-copy">
+              <span class="diagram-label">Route Lifecycle</span>
+              <h3>The active route becomes shared context for later safety and charging decisions.</h3>
+              <p>
+                The original architecture flow shows the key handoff: once the trip is planned and
+                registered, fatigue and battery modules can monitor the same route and ask before
+                mutating it.
+              </p>
+            </div>
+            <div class="route-flow-strip" aria-label="Route lifecycle flow diagram">
+              <div>
+                <span>01</span>
+                <strong>Driver plans trip</strong>
+              </div>
+              <div>
+                <span>02</span>
+                <strong>Backend computes route</strong>
+              </div>
+              <div>
+                <span>03</span>
+                <strong>Active route registered</strong>
+              </div>
+              <div>
+                <span>04</span>
+                <strong>Fatigue and battery monitor route</strong>
+              </div>
+              <div>
+                <span>05</span>
+                <strong>Driver accepts suggested stop</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="diagram-block reveal">
+            <div class="diagram-copy">
+              <span class="diagram-label">Trip Planner</span>
+              <h3>Natural language becomes an optimized, human-confirmed route.</h3>
+              <p>
+                DeepSeek parses the trip intent, Google services resolve and rank candidates, and
+                LangGraph asks for clarification only when a human choice is needed.
+              </p>
+            </div>
+            <div class="diagram-shell" aria-label="Trip planner architecture diagram">
+              <div class="mermaid">
+flowchart TB
+    Prompt["Driver instruction"]
+    API["POST /api/trip-planner"]
+    Parse["DeepSeek parser: ParsedTrip"]
+    Tags["Resolve home, work, current location"]
+    Prefs["Merge stored preferences"]
+    Places["Google Places search"]
+    Matrix["Google Routes Matrix ranking"]
+    Choice["LangGraph interrupt if choice needed"]
+    Route["compute_multi_stop_route"]
+    Validate["Schedule validation"]
+    UI["Route polyline, waypoints, summary"]
+
+    Prompt --> API --> Parse --> Tags --> Prefs --> Places --> Matrix
+    Matrix --> Choice
+    Choice --> Places
+    Choice --> Route
+    Matrix --> Route --> Validate --> UI
+              </div>
+            </div>
+          </article>
+
+          <article class="diagram-block reveal">
+            <div class="diagram-copy">
+              <span class="diagram-label">Battery Predictor</span>
+              <h3>Historical EV driving data becomes route and weekday estimates.</h3>
+              <p>
+                XGBoost models predict trip battery need, weekday distance, and weekday usage; the
+                central charging service uses that prediction to decide whether to search chargers.
+              </p>
+            </div>
+            <div class="diagram-shell" aria-label="Battery predictor architecture diagram">
+              <div class="mermaid">
+flowchart TB
+    Dataset["500_ev.xlsx"]
+    Prep["prepare features: distance, efficiency, battery delta, weekday"]
+    TripModel["XGBoost trip model: distance_km -> required_battery_percent"]
+    DistanceModel["XGBoost weekday distance model"]
+    UsageModel["XGBoost weekday usage model"]
+    Artifact["ev_battery_models.joblib"]
+    Router["/api/battery/*"]
+    Panel["frontend/features/battery.js"]
+    AgentCharge["central_agent/charging_service.py"]
+    Chargers["Google Places charger search"]
+
+    Dataset --> Prep
+    Prep --> TripModel
+    Prep --> DistanceModel
+    Prep --> UsageModel
+    TripModel --> Artifact
+    DistanceModel --> Artifact
+    UsageModel --> Artifact
+    Artifact --> Router --> Panel
+    TripModel --> AgentCharge --> Chargers
+              </div>
+            </div>
+          </article>
+
+          <article class="diagram-block reveal">
+            <div class="diagram-copy">
+              <span class="diagram-label">Fatigue Detection</span>
+              <h3>Webcam frames become fatigue scores, then route-aware rest-stop prompts.</h3>
+              <p>
+                The browser streams frames to the WebSocket, MediaPipe produces fatigue signals, and the
+                central agent searches safe stops ahead when warning severity is reached.
+              </p>
+            </div>
+            <div class="diagram-shell diagram-shell-wide" aria-label="Fatigue detection sequence diagram">
+              <div class="mermaid">
+sequenceDiagram
+    participant Driver
+    participant Frontend as fatigue.js
+    participant WS as /ws/fatigue/detect
+    participant Detector as FatigueDetector
+    participant Agent as central_agent/graph.py
+    participant Places as Google Places
+    participant UI as Alert modal
+
+    Driver->>Frontend: Starts driver monitor
+    Frontend->>WS: Sends base64 JPEG frame every 140 ms
+    WS->>Detector: process(frame)
+    Detector-->>WS: fatigue score, symptoms, landmarks, alert
+    WS-->>Frontend: JSON result
+    Frontend->>Frontend: update dashboard and overlay
+    Frontend->>Agent: POST fatigue recommendation when score >= 50
+    Agent->>Places: Search rest stops ahead on active route
+    Places-->>Agent: Ranked candidates
+    Agent-->>Frontend: AgentNotification
+    Frontend->>UI: Show Rest there / Not now
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="features" class="section-shell">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Core Technical Modules</p>
+          <h2>Four modules work together, but each has a clear responsibility.</h2>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card reveal">
+            <span class="feature-tag">Trip Planner</span>
+            <h3>Natural language to optimized route</h3>
+            <p>
+              DeepSeek parses the driver request into structured trip intent. Google Places resolves
+              candidates, Google Routes ranks drive impact, and LangGraph interrupts when a human choice
+              is needed.
+            </p>
+            <ol>
+              <li>Parse instruction into origin, stops, preferences, and time constraints.</li>
+              <li>Resolve places and rank candidates by route cost, rating, and text match.</li>
+              <li>Render the final route, waypoints, distance, and arrival context in the UI.</li>
+            </ol>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-tag green">Central Agent</span>
+            <h3>One decision point for safety and route context</h3>
+            <p>
+              The central agent connects route geometry, fatigue severity, battery need, and preference
+              memory before creating one actionable notification.
+            </p>
+            <ol>
+              <li>Load active route and user memory.</li>
+              <li>Search route-relative rest stops or chargers.</li>
+              <li>Send a clear recommendation with accept and dismiss actions.</li>
+            </ol>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-tag amber">Battery Predictor</span>
+            <h3>XGBoost estimates EV usage from real trip data</h3>
+            <p>
+              Three models predict trip battery need, expected weekday distance, and expected weekday
+              usage from the EV dataset. Charging logic uses the prediction to find the right charger
+              point on the active route.
+            </p>
+            <ol>
+              <li>Load or train model artifacts from <code>500_ev.xlsx</code>.</li>
+              <li>Predict required battery for a typed or active-route distance.</li>
+              <li>Recommend no charge, destination charge, or mid-trip charge.</li>
+            </ol>
+          </article>
+
+          <article class="feature-card reveal">
+            <span class="feature-tag">Fatigue Monitor</span>
+            <h3>Webcam frames become route-aware rest suggestions</h3>
+            <p>
+              The browser streams webcam frames over a WebSocket. MediaPipe FaceMesh measures eyes,
+              mouth, blinks, and head motion. When fatigue reaches warning level, the central agent finds
+              a safe stop ahead.
+            </p>
+            <ol>
+              <li>Send resized JPEG frames every 140 ms.</li>
+              <li>Score eye closure, yawns, blink frequency, and head nods.</li>
+              <li>Trigger a rest-stop recommendation when score reaches warning level.</li>
+            </ol>
+          </article>
+        </div>
+      </section>
+
+      <section id="flows" class="section-shell">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Important Runtime Flows</p>
+          <h2>The demo proves the agent can act on changing driving context.</h2>
+        </div>
+
+        <div class="runtime-grid">
+          <article class="runtime-flow reveal">
+            <span>Flow A</span>
+            <h3>Natural-language route planning</h3>
+            <p>
+              Driver prompt &rarr; DeepSeek structured parse &rarr; Google Places resolution &rarr; Routes computation &rarr;
+              map rendering and route registration.
+            </p>
+          </article>
+          <article class="runtime-flow reveal">
+            <span>Flow B</span>
+            <h3>Fatigue intervention</h3>
+            <p>
+              Webcam score crosses threshold &rarr; active route loaded &rarr; rest stops searched ahead &rarr; driver
+              accepts stop &rarr; route recomputed with the stop.
+            </p>
+          </article>
+          <article class="runtime-flow reveal">
+            <span>Flow C</span>
+            <h3>Charging recommendation</h3>
+            <p>
+              Battery level and route distance &rarr; XGBoost trip prediction &rarr; charger search near trigger
+              point &rarr; charging card &rarr; accepted charger inserted into route.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section id="evidence" class="section-shell">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Prototype Evidence</p>
+          <h2>The technical modules are visible in the running UI.</h2>
+          <p>
+            These screenshots show the map-first cockpit, recommendation surfaces, battery predictor, and
+            live fatigue monitor that connect back to the backend modules above.
+          </p>
+        </div>
+
+        <div class="screenshot-grid">
+          <figure class="shot shot-wide reveal">
+            <img
+              src="./assets/road-trip-overview.png"
+              alt="Road trip planner showing Kuala Lumpur to Penang recommendations on a Google map"
+            />
+            <figcaption>
+              <span>Road trip planner</span>
+              Active route state, recommendation cards, Google Maps markers, and EV battery widget.
+            </figcaption>
+          </figure>
+          <figure class="shot reveal">
+            <img src="./assets/charging-plan.png" alt="Charging plan panel with route charger recommendations" />
+            <figcaption>
+              <span>Charging plan</span>
+              Agent prediction and charger recommendation based on route distance and battery reserve.
+            </figcaption>
+          </figure>
+          <figure class="shot reveal">
+            <img src="./assets/battery-predictor.png" alt="Battery predictor panel with weekly driving chart" />
+            <figcaption>
+              <span>Battery predictor</span>
+              Trip battery estimate, weekday distance model, usage model, and weekly chart.
+            </figcaption>
+          </figure>
+          <figure class="shot reveal">
+            <img src="./assets/fatigue-monitor.png" alt="Driver fatigue monitor with webcam landmarks and fatigue counters" />
+            <figcaption>
+              <span>Driver monitor</span>
+              MediaPipe landmarks, fatigue score, symptom counters, and alert-ready state.
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="stack" class="section-shell stack-section">
+        <div class="section-heading reveal">
+          <p class="eyebrow">Stack</p>
+          <h2>Simple frontend, typed backend routes, specialized AI tools.</h2>
+        </div>
+
+        <div class="stack-list">
+          <div class="stack-row reveal">
+            <span>Frontend</span>
+            <strong>Vanilla JavaScript, modular CSS, Google Maps JS API</strong>
+            <p>Focused browser modules for map rendering, trip actions, road trips, battery, and fatigue.</p>
+          </div>
+          <div class="stack-row reveal">
+            <span>Backend</span>
+            <strong>FastAPI, Uvicorn, REST APIs, WebSocket</strong>
+            <p>Router groups for maps, trip planner, central agent, battery, and fatigue detection.</p>
+          </div>
+          <div class="stack-row reveal">
+            <span>AI + ML</span>
+            <strong>LangGraph, DeepSeek, XGBoost, MediaPipe FaceMesh</strong>
+            <p>State-machine decisions, language parsing, battery prediction, and live computer vision.</p>
+          </div>
+          <div class="stack-row reveal">
+            <span>Data + Maps</span>
+            <strong>Google Routes, Places, Matrix, JSON memory, SQLite fallback</strong>
+            <p>Route geometry, place search, preference learning, and graph checkpointing support.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>
+        <strong>MEME</strong>
+        <span>Mercedes Enhanced Mobility Engine</span>
+      </div>
+      <p>Built by TehOlimauAis for a safer, more personal EV journey.</p>
+    </footer>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
