@@ -301,40 +301,6 @@ flowchart TB
 
           <article class="diagram-block reveal">
             <div class="diagram-copy">
-              <span class="diagram-label">Route Lifecycle</span>
-              <h3>The active route becomes shared context for later safety and charging decisions.</h3>
-              <p>
-                The original architecture flow shows the key handoff: once the road trip is planned and
-                registered, fatigue and battery modules can monitor the same route and ask before
-                changing it.
-              </p>
-            </div>
-            <div class="route-flow-strip" aria-label="Route lifecycle flow diagram">
-              <div>
-                <span>01</span>
-                <strong>Driver plans road trip</strong>
-              </div>
-              <div>
-                <span>02</span>
-                <strong>Backend computes route</strong>
-              </div>
-              <div>
-                <span>03</span>
-                <strong>Active route registered</strong>
-              </div>
-              <div>
-                <span>04</span>
-                <strong>Fatigue and battery monitor route</strong>
-              </div>
-              <div>
-                <span>05</span>
-                <strong>Driver accepts suggested stop</strong>
-              </div>
-            </div>
-          </article>
-
-          <article class="diagram-block reveal">
-            <div class="diagram-copy">
               <span class="diagram-label">Road Trip Planner</span>
               <h3>Origin and destination become an optimized, human-confirmed road trip.</h3>
               <p>
