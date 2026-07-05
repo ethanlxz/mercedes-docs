@@ -50,15 +50,18 @@
       <section id="top" class="hero section-shell">
         <div class="hero-copy reveal">
           <p class="eyebrow">Mercedes Enhanced Mobility Engine</p>
-          <h1>One road trip planner connects routes, fatigue safety, and EV battery decisions.</h1>
-          <p class="hero-lede">
-            MEME is a FastAPI and vanilla JavaScript road trip planner that turns origin,
-            destination, stops, and car signals into one route-aware recommendation. The driver still
-            confirms every action.
-          </p>
+          <h1>Introducing MEME: A modular AI layer built for connected mobility.</h1>
+          <div class="hero-team" aria-label="Built by TehOlimauAis">
+            <span>By</span>
+            <img src="./assets/tehOlimauais.png" alt="TehOlimauAis logo" />
+          </div>
           <div class="hero-actions">
-            <a class="primary-action" href="#architecture">See architecture</a>
-            <a class="secondary-action" href="#features">Review technical modules</a>
+            <a
+              class="secondary-action github-action"
+              href="https://github.com/ethanlxz/mercedes-hackathon-2026"
+              target="_blank"
+              rel="noreferrer"
+            >View GitHub</a>
           </div>
         </div>
 
@@ -87,11 +90,9 @@
       <section id="summary" class="section-shell">
         <div class="section-heading reveal">
           <p class="eyebrow">Judge Summary</p>
-          <h2>The technical contribution is not another map UI. It is the coordination layer.</h2>
+          <h2>The core value is the coordination layer.</h2>
           <p>
-            MEME keeps road trip planning, live fatigue detection, battery prediction, and driver
-            preferences in one decision context. That lets the app recommend a useful next stop
-            instead of showing disconnected warnings.
+            MEME combines planning, fatigue, battery, and preferences into a single context to provide smart stop recommendations instead of disconnected warnings.
           </p>
         </div>
 
@@ -127,11 +128,7 @@
       <section id="architecture" class="section-shell">
         <div class="section-heading reveal">
           <p class="eyebrow">System Architecture</p>
-          <h2>Road-trip signals flow through FastAPI into agent, model, and maps services.</h2>
-          <p>
-            The prototype is intentionally inspectable: the road-trip UI calls clear backend endpoints,
-            and complex decisions live in state-machine workflows.
-          </p>
+          <h2>Here's how it works.</h2>
         </div>
 
         <div class="system-flow reveal" aria-label="MEME architecture flow">
@@ -197,7 +194,7 @@
       <section id="diagrams" class="section-shell technical-diagrams">
         <div class="section-heading reveal">
           <p class="eyebrow">Technical Diagrams</p>
-          <h2>The original system diagrams, now folded into the v2 brief.</h2>
+          <h2>Nerdy diagrams for the nerds.</h2>
           <p>
             These are the detailed diagrams from the first MEME docs page, covering the central
             agent, route lifecycle, full stack, road trip planner, battery model, and fatigue intervention
@@ -257,60 +254,47 @@ flowchart TB
           <article class="diagram-block reveal">
             <div class="diagram-copy">
               <span class="diagram-label">Overall Architecture</span>
-              <h3>Vanilla frontend, FastAPI routers, model services, and external intelligence.</h3>
+              <h3>A simple four-layer flow: UI, API, intelligence, and outside services.</h3>
               <p>
-                The browser modules call clear API groups, while LangGraph, XGBoost, MediaPipe, DeepSeek,
-                and Google Maps services handle specialized reasoning.
+                The driver uses one road-trip cockpit. FastAPI routes the request to focused intelligence
+                modules, which call maps, models, memory, and webcam services only when needed.
               </p>
             </div>
             <div class="diagram-shell" aria-label="Overall technical architecture diagram">
               <div class="mermaid">
-flowchart LR
-    subgraph Browser["Vanilla frontend"]
-        Shell["index.html cockpit shell"]
-        API["js/api.js fetch client"]
-        Map["core-map.js Google Maps drawing"]
-        Features["features: road-trip actions, battery, fatigue"]
-    end
+flowchart TB
+    Driver["Driver road-trip cockpit"]
+    Frontend["Vanilla JS frontend: map, recommendations, battery, fatigue"]
+    Gateway["FastAPI gateway"]
 
-    subgraph FastAPI["FastAPI backend"]
-        Main["main.py router mounting"]
-        Maps["routers/maps.py"]
-        RoadTrip["routers/trip_planner.py road-trip endpoint"]
-        Agent["routers/central_agent.py"]
-        BatteryRouter["routers/battery.py"]
-        FatigueRouter["routers/fatigue.py WebSocket"]
-    end
+    RoadTrip["Road trip planner: route + stop recommendations"]
+    Agent["Central LangGraph agent: safety, charging, memory"]
+    Battery["EV battery predictor"]
+    Fatigue["Driver fatigue detector"]
 
-    subgraph Intelligence["Reasoning and model layer"]
-        RoadTripService["trip_planner/road_trip_service.py"]
-        AgentGraph["central_agent/graph.py"]
-        BatteryModel["battery/model_service.py"]
-        FatigueDetector["fatigue/detector.py"]
-        Memory["services/memory_service.py"]
-    end
+    Maps["Google Maps Platform"]
+    DeepSeek["DeepSeek stop explanations"]
+    Memory["Preference memory"]
+    Webcam["Browser webcam frames"]
 
-    subgraph External["External services"]
-        Google["Google Maps Platform"]
-        DeepSeek["DeepSeek via ChatOpenAI"]
-        Webcam["Browser webcam"]
-    end
+    Driver --> Frontend --> Gateway
+    Gateway --> RoadTrip
+    Gateway --> Agent
+    Gateway --> Battery
+    Gateway --> Fatigue
 
-    Shell --> API
-    Features --> API
-    Map --> Google
-    API --> Main
-    Main --> Maps --> Google
-    Main --> RoadTrip --> RoadTripService
-    Main --> Agent --> AgentGraph
-    Main --> BatteryRouter --> BatteryModel
-    Main --> FatigueRouter --> FatigueDetector
-    RoadTripService --> DeepSeek
-    RoadTripService --> Google
-    AgentGraph --> Google
-    AgentGraph --> Memory
-    BatteryModel --> Memory
-    Webcam --> FatigueRouter
+    RoadTrip --> Maps
+    RoadTrip --> DeepSeek
+    RoadTrip --> Memory
+    Agent --> Maps
+    Agent --> Memory
+    Battery --> Memory
+    Webcam --> Fatigue
+
+    RoadTrip --> Frontend
+    Agent --> Frontend
+    Battery --> Frontend
+    Fatigue --> Frontend
               </div>
             </div>
           </article>
@@ -523,40 +507,6 @@ sequenceDiagram
               <li>Score eye closure, yawns, blink frequency, and head nods.</li>
               <li>Trigger a road-trip rest-stop recommendation when score reaches warning level.</li>
             </ol>
-          </article>
-        </div>
-      </section>
-
-      <section id="flows" class="section-shell">
-        <div class="section-heading reveal">
-          <p class="eyebrow">Important Runtime Flows</p>
-          <h2>The demo proves the road trip planner can react to changing driving context.</h2>
-        </div>
-
-        <div class="runtime-grid">
-          <article class="runtime-flow reveal">
-            <span>Flow A</span>
-            <h3>Road-trip planning</h3>
-            <p>
-              Origin and destination &rarr; preference memory loaded &rarr; route corridor &rarr; Google Places stop search &rarr;
-              Routes ranking &rarr; DeepSeek explanations &rarr; recommendation cards and active route registration.
-            </p>
-          </article>
-          <article class="runtime-flow reveal">
-            <span>Flow B</span>
-            <h3>Fatigue intervention</h3>
-            <p>
-              Webcam score crosses threshold &rarr; active road-trip route loaded &rarr; rest stops searched ahead &rarr; driver
-              accepts stop &rarr; route recomputed with the stop.
-            </p>
-          </article>
-          <article class="runtime-flow reveal">
-            <span>Flow C</span>
-            <h3>Charging recommendation</h3>
-            <p>
-              Battery level and road-trip distance &rarr; XGBoost prediction &rarr; charger search near trigger
-              point &rarr; charging card &rarr; accepted charger inserted into the road-trip route.
-            </p>
           </article>
         </div>
       </section>

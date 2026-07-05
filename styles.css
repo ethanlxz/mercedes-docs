@@ -248,6 +248,25 @@ code {
   min-width: 0;
 }
 
+.hero-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin-top: 20px;
+}
+
+.hero-team img {
+  width: 54px;
+  height: 54px;
+  object-fit: contain;
+}
+
+.hero-team span {
+  color: var(--muted);
+  font: 800 0.88rem/1 var(--font-display);
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -361,6 +380,11 @@ h3 {
   border: 1px solid rgba(23, 105, 232, 0.20);
   background: rgba(255, 255, 255, 0.76);
   color: var(--blue);
+}
+
+.github-action {
+  border-color: rgba(17, 24, 39, 0.16);
+  color: var(--ink);
 }
 
 .hero-visual {
@@ -909,6 +933,10 @@ figcaption span {
   .hero {
     padding-top: 34px;
     max-width: 320px;
+  }
+
+  .hero-team {
+    margin-top: 16px;
   }
 
   h1 {
