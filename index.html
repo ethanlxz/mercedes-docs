@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MEME Technical Brief | Mercedes Enhanced Mobility Engine</title>
+    <title>MEME Road Trip Planner Brief | Mercedes Enhanced Mobility Engine</title>
     <meta
       name="description"
-      content="A mobile-friendly technical brief for MEME, the Mercedes Enhanced Mobility Engine hackathon prototype."
+      content="A mobile-friendly technical brief for MEME, the Mercedes road trip planner hackathon prototype."
     />
     <link rel="stylesheet" href="./styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
@@ -17,7 +17,7 @@
     <header class="site-header">
       <a class="brand" href="#top" aria-label="MEME technical brief home">
         <span class="brand-badge">MEME</span>
-        <span>Technical Brief</span>
+        <span>Documentation</span>
       </a>
 
       <nav class="desktop-nav" aria-label="Primary navigation">
@@ -50,10 +50,11 @@
       <section id="top" class="hero section-shell">
         <div class="hero-copy reveal">
           <p class="eyebrow">Mercedes Enhanced Mobility Engine</p>
-          <h1>One agent connects route planning, fatigue safety, and EV battery decisions.</h1>
+          <h1>One road trip planner connects routes, fatigue safety, and EV battery decisions.</h1>
           <p class="hero-lede">
-            MEME is a FastAPI and vanilla JavaScript prototype that turns isolated car signals into one
-            route-aware recommendation. The driver still confirms every action.
+            MEME is a FastAPI and vanilla JavaScript road trip planner that turns origin,
+            destination, stops, and car signals into one route-aware recommendation. The driver still
+            confirms every action.
           </p>
           <div class="hero-actions">
             <a class="primary-action" href="#architecture">See architecture</a>
@@ -88,9 +89,9 @@
           <p class="eyebrow">Judge Summary</p>
           <h2>The technical contribution is not another map UI. It is the coordination layer.</h2>
           <p>
-            MEME keeps trip planning, live fatigue detection, battery prediction, and driver preferences
-            in one decision context. That lets the app recommend a useful next step instead of showing
-            disconnected warnings.
+            MEME keeps road trip planning, live fatigue detection, battery prediction, and driver
+            preferences in one decision context. That lets the app recommend a useful next stop
+            instead of showing disconnected warnings.
           </p>
         </div>
 
@@ -99,24 +100,25 @@
             <span>01</span>
             <h3>Central AI Agent</h3>
             <p>
-              A LangGraph workflow loads the active route, fatigue score, EV battery state, and preference
-              memory before producing a driver-facing recommendation.
+              A LangGraph workflow loads the active road-trip route, fatigue score, EV battery state,
+              and preference memory before producing a driver-facing recommendation.
             </p>
           </article>
           <article class="info-card reveal">
             <span>02</span>
             <h3>Route-Aware Decisions</h3>
             <p>
-              Rest stops and chargers are searched ahead on the route, then ranked by actual drive impact,
-              safety priority, Google place data, and remembered preferences.
+              Food stops, rest stops, attractions, and chargers are searched ahead on the route, then
+              ranked by actual drive impact, safety priority, Google place data, and remembered
+              preferences.
             </p>
           </article>
           <article class="info-card reveal">
             <span>03</span>
             <h3>Human Confirmation</h3>
             <p>
-              The system never silently changes the trip. It presents one clear action, such as Rest there
-              or Charge there, and updates the route only after acceptance.
+              The system never silently changes the road trip. It presents one clear action, such as
+              Rest there or Charge there, and updates the route only after acceptance.
             </p>
           </article>
         </div>
@@ -125,10 +127,10 @@
       <section id="architecture" class="section-shell">
         <div class="section-heading reveal">
           <p class="eyebrow">System Architecture</p>
-          <h2>Frontend signals flow through FastAPI into agent, model, and maps services.</h2>
+          <h2>Road-trip signals flow through FastAPI into agent, model, and maps services.</h2>
           <p>
-            The prototype is intentionally inspectable: focused browser modules call clear backend
-            endpoints, and complex decisions live in state-machine workflows.
+            The prototype is intentionally inspectable: the road-trip UI calls clear backend endpoints,
+            and complex decisions live in state-machine workflows.
           </p>
         </div>
 
@@ -136,17 +138,17 @@
           <div class="flow-stage">
             <span>Input</span>
             <h3>Driver + Vehicle Context</h3>
-            <p>Natural-language trips, active route ID, webcam fatigue frames, EV battery level.</p>
+            <p>Origin, destination, recommended stops, active route ID, webcam fatigue frames, EV battery level.</p>
           </div>
           <div class="flow-stage">
             <span>API</span>
             <h3>FastAPI Gateway</h3>
-            <p><code>/api/trip-planner</code>, <code>/api/central-agent</code>, <code>/api/battery</code>, <code>/ws/fatigue/detect</code>.</p>
+            <p><code>/api/road-trip-planner</code>, <code>/api/central-agent</code>, <code>/api/battery</code>, <code>/ws/fatigue/detect</code>.</p>
           </div>
           <div class="flow-stage flow-stage-core">
             <span>Reasoning</span>
             <h3>LangGraph Agent</h3>
-            <p>Loads route state, evaluates risk, searches candidates, builds one recommendation.</p>
+            <p>Loads road-trip state, evaluates risk, searches stop candidates, builds one recommendation.</p>
           </div>
           <div class="flow-stage">
             <span>Services</span>
@@ -172,14 +174,21 @@
             <strong>Lower latency</strong>
             <p>
               The agent reuses route context instead of forcing fatigue, charging, and preferences to
-              rebuild journey state independently.
+              rebuild road-trip state independently.
+            </p>
+          </article>
+          <article class="note reveal">
+            <strong>Preference memory</strong>
+            <p>
+              The road-trip planner reads central-agent memory before ranking stops, so preferred stop
+              types are boosted and disliked categories are softened across future recommendations.
             </p>
           </article>
           <article class="note reveal">
             <strong>Extensible design</strong>
             <p>
-              New vehicle signals can become graph inputs without rewriting the map UI or duplicating
-              routing logic.
+              New vehicle signals can become graph inputs without rewriting the road-trip UI or
+              duplicating routing logic.
             </p>
           </article>
         </div>
@@ -191,7 +200,7 @@
           <h2>The original system diagrams, now folded into the v2 brief.</h2>
           <p>
             These are the detailed diagrams from the first MEME docs page, covering the central
-            agent, route lifecycle, full stack, trip planner, battery model, and fatigue intervention
+            agent, route lifecycle, full stack, road trip planner, battery model, and fatigue intervention
             flow.
           </p>
         </div>
@@ -202,8 +211,9 @@
               <span class="diagram-label">Central Agent</span>
               <h3>Shared decision point for route context, fatigue, charging, and preferences.</h3>
               <p>
-                Road-trip state is registered once, then reused by fatigue and charging recommendations
-                so the driver sees one contextual action instead of disconnected alerts.
+                Road-trip state is registered once, and the LangGraph agent starts by loading preference
+                memory. That same graph can record feedback, reset memory, or use the learned preferences
+                while finding fatigue rest stops and charging recommendations.
               </p>
             </div>
             <div class="diagram-shell" aria-label="Central AI Agent architecture diagram">
@@ -215,10 +225,12 @@ flowchart TB
     Fatigue["POST /api/central-agent/fatigue/recommendation"]
     Charging["POST /api/central-agent/charging/recommendation"]
     Memory["memory_service.py preference memory"]
+    Summary["preference summary"]
+    Feedback["record / reset stop feedback"]
     Graph["central_agent/graph.py LangGraph"]
     Rest["rest_stop_service.py route-relative rest stops"]
     ChargeSvc["charging_service.py charger decision"]
-    Battery["battery/model_service.py XGBoost trip model"]
+    Battery["battery/model_service.py XGBoost road-trip model"]
     Places["Google Places"]
     Routes["Google Routes"]
     Modal["Driver modal: rest there / not now"]
@@ -227,7 +239,8 @@ flowchart TB
     UI --> Active --> State
     UI --> Fatigue --> Graph
     UI --> Charging --> ChargeSvc
-    Graph --> Memory
+    Graph --> Memory --> Summary
+    Graph --> Feedback --> Memory
     Graph --> State
     Graph --> Rest --> Places
     Graph --> Modal
@@ -257,20 +270,20 @@ flowchart LR
         Shell["index.html cockpit shell"]
         API["js/api.js fetch client"]
         Map["core-map.js Google Maps drawing"]
-        Features["features: trip, road-trip, battery, fatigue"]
+        Features["features: road-trip actions, battery, fatigue"]
     end
 
     subgraph FastAPI["FastAPI backend"]
         Main["main.py router mounting"]
         Maps["routers/maps.py"]
-        Trip["routers/trip_planner.py"]
+        RoadTrip["routers/trip_planner.py road-trip endpoint"]
         Agent["routers/central_agent.py"]
         BatteryRouter["routers/battery.py"]
         FatigueRouter["routers/fatigue.py WebSocket"]
     end
 
     subgraph Intelligence["Reasoning and model layer"]
-        TripGraph["trip_planner/graph.py"]
+        RoadTripService["trip_planner/road_trip_service.py"]
         AgentGraph["central_agent/graph.py"]
         BatteryModel["battery/model_service.py"]
         FatigueDetector["fatigue/detector.py"]
@@ -288,12 +301,12 @@ flowchart LR
     Map --> Google
     API --> Main
     Main --> Maps --> Google
-    Main --> Trip --> TripGraph
+    Main --> RoadTrip --> RoadTripService
     Main --> Agent --> AgentGraph
     Main --> BatteryRouter --> BatteryModel
     Main --> FatigueRouter --> FatigueDetector
-    TripGraph --> DeepSeek
-    TripGraph --> Google
+    RoadTripService --> DeepSeek
+    RoadTripService --> Google
     AgentGraph --> Google
     AgentGraph --> Memory
     BatteryModel --> Memory
@@ -307,15 +320,15 @@ flowchart LR
               <span class="diagram-label">Route Lifecycle</span>
               <h3>The active route becomes shared context for later safety and charging decisions.</h3>
               <p>
-                The original architecture flow shows the key handoff: once the trip is planned and
+                The original architecture flow shows the key handoff: once the road trip is planned and
                 registered, fatigue and battery modules can monitor the same route and ask before
-                mutating it.
+                changing it.
               </p>
             </div>
             <div class="route-flow-strip" aria-label="Route lifecycle flow diagram">
               <div>
                 <span>01</span>
-                <strong>Driver plans trip</strong>
+                <strong>Driver plans road trip</strong>
               </div>
               <div>
                 <span>02</span>
@@ -338,33 +351,37 @@ flowchart LR
 
           <article class="diagram-block reveal">
             <div class="diagram-copy">
-              <span class="diagram-label">Trip Planner</span>
-              <h3>Natural language becomes an optimized, human-confirmed route.</h3>
+              <span class="diagram-label">Road Trip Planner</span>
+              <h3>Origin and destination become an optimized, human-confirmed road trip.</h3>
               <p>
-                DeepSeek parses the trip intent, Google services resolve and rank candidates, and
-                LangGraph asks for clarification only when a human choice is needed.
+                The planner finds scenic, food, rest, and charger candidates between two points, ranks
+                them by route impact, place quality, and central-agent preference memory, then returns a
+                road-trip route the driver can confirm.
               </p>
             </div>
-            <div class="diagram-shell" aria-label="Trip planner architecture diagram">
+            <div class="diagram-shell" aria-label="Road trip planner architecture diagram">
               <div class="mermaid">
 flowchart TB
-    Prompt["Driver instruction"]
-    API["POST /api/trip-planner"]
-    Parse["DeepSeek parser: ParsedTrip"]
-    Tags["Resolve home, work, current location"]
-    Prefs["Merge stored preferences"]
-    Places["Google Places search"]
+    Form["Origin + destination"]
+    API["POST /api/road-trip-planner"]
+    Service["road_trip_service.py"]
+    Memory["get_central_agent_memory"]
+    Corridor["Build route corridor"]
+    Categories["Search food, attractions, rest, chargers"]
+    Preferences["Preferred / disliked stop types"]
+    Places["Google Places candidates"]
     Matrix["Google Routes Matrix ranking"]
-    Choice["LangGraph interrupt if choice needed"]
-    Route["compute_multi_stop_route"]
-    Validate["Schedule validation"]
-    UI["Route polyline, waypoints, summary"]
+    Explain["DeepSeek stop explanations with soft preferences"]
+    Route["Road-trip route response"]
+    UI["Map polyline, stop cards, active route registration"]
 
-    Prompt --> API --> Parse --> Tags --> Prefs --> Places --> Matrix
-    Matrix --> Choice
-    Choice --> Places
-    Choice --> Route
-    Matrix --> Route --> Validate --> UI
+    Form --> API --> Service
+    Service --> Memory --> Preferences
+    Service --> Corridor --> Categories --> Places --> Matrix
+    Preferences --> Categories
+    Preferences --> Matrix
+    Preferences --> Explain
+    Matrix --> Explain --> Route --> UI
               </div>
             </div>
           </article>
@@ -374,7 +391,7 @@ flowchart TB
               <span class="diagram-label">Battery Predictor</span>
               <h3>Historical EV driving data becomes route and weekday estimates.</h3>
               <p>
-                XGBoost models predict trip battery need, weekday distance, and weekday usage; the
+                XGBoost models predict road-trip battery need, weekday distance, and weekday usage; the
                 central charging service uses that prediction to decide whether to search chargers.
               </p>
             </div>
@@ -383,7 +400,7 @@ flowchart TB
 flowchart TB
     Dataset["500_ev.xlsx"]
     Prep["prepare features: distance, efficiency, battery delta, weekday"]
-    TripModel["XGBoost trip model: distance_km -> required_battery_percent"]
+    TripModel["XGBoost road-trip model: distance_km -> required_battery_percent"]
     DistanceModel["XGBoost weekday distance model"]
     UsageModel["XGBoost weekday usage model"]
     Artifact["ev_battery_models.joblib"]
@@ -450,17 +467,17 @@ sequenceDiagram
 
         <div class="feature-grid">
           <article class="feature-card reveal">
-            <span class="feature-tag">Trip Planner</span>
-            <h3>Natural language to optimized route</h3>
+            <span class="feature-tag">Road Trip Planner</span>
+            <h3>Origin and destination to optimized road trip</h3>
             <p>
-              DeepSeek parses the driver request into structured trip intent. Google Places resolves
-              candidates, Google Routes ranks drive impact, and LangGraph interrupts when a human choice
-              is needed.
+              The road-trip endpoint takes origin and destination, searches useful stops between them,
+              reads preference memory for liked and disliked stop types, uses Google Routes to rank
+              drive impact, and returns a map-ready route with recommended places.
             </p>
             <ol>
-              <li>Parse instruction into origin, stops, preferences, and time constraints.</li>
-              <li>Resolve places and rank candidates by route cost, rating, and text match.</li>
-              <li>Render the final route, waypoints, distance, and arrival context in the UI.</li>
+              <li>Collect the driver origin and destination from the road-trip panel.</li>
+              <li>Use preference memory to order stop searches and score food, rest, attraction, and charger candidates.</li>
+              <li>Render the final road-trip route, waypoints, distance, and recommendation cards.</li>
             </ol>
           </article>
 
@@ -468,27 +485,27 @@ sequenceDiagram
             <span class="feature-tag green">Central Agent</span>
             <h3>One decision point for safety and route context</h3>
             <p>
-              The central agent connects route geometry, fatigue severity, battery need, and preference
-              memory before creating one actionable notification.
+              The central agent connects road-trip geometry, fatigue severity, battery need, and
+              preference memory before creating one actionable notification.
             </p>
             <ol>
-              <li>Load active route and user memory.</li>
-              <li>Search route-relative rest stops or chargers.</li>
+              <li>Load active road-trip route and user memory.</li>
+              <li>Route feedback tasks to memory updates, or search route-relative rest stops and chargers.</li>
               <li>Send a clear recommendation with accept and dismiss actions.</li>
             </ol>
           </article>
 
           <article class="feature-card reveal">
             <span class="feature-tag amber">Battery Predictor</span>
-            <h3>XGBoost estimates EV usage from real trip data</h3>
+            <h3>XGBoost estimates EV usage for road-trip distances</h3>
             <p>
-              Three models predict trip battery need, expected weekday distance, and expected weekday
-              usage from the EV dataset. Charging logic uses the prediction to find the right charger
-              point on the active route.
+              Three models predict road-trip battery need, expected weekday distance, and expected
+              weekday usage from the EV dataset. Charging logic uses the prediction to find the right charger
+              point on the active road-trip route.
             </p>
             <ol>
               <li>Load or train model artifacts from <code>500_ev.xlsx</code>.</li>
-              <li>Predict required battery for a typed or active-route distance.</li>
+              <li>Predict required battery for a road-trip distance.</li>
               <li>Recommend no charge, destination charge, or mid-trip charge.</li>
             </ol>
           </article>
@@ -504,7 +521,7 @@ sequenceDiagram
             <ol>
               <li>Send resized JPEG frames every 140 ms.</li>
               <li>Score eye closure, yawns, blink frequency, and head nods.</li>
-              <li>Trigger a rest-stop recommendation when score reaches warning level.</li>
+              <li>Trigger a road-trip rest-stop recommendation when score reaches warning level.</li>
             </ol>
           </article>
         </div>
@@ -513,23 +530,23 @@ sequenceDiagram
       <section id="flows" class="section-shell">
         <div class="section-heading reveal">
           <p class="eyebrow">Important Runtime Flows</p>
-          <h2>The demo proves the agent can act on changing driving context.</h2>
+          <h2>The demo proves the road trip planner can react to changing driving context.</h2>
         </div>
 
         <div class="runtime-grid">
           <article class="runtime-flow reveal">
             <span>Flow A</span>
-            <h3>Natural-language route planning</h3>
+            <h3>Road-trip planning</h3>
             <p>
-              Driver prompt &rarr; DeepSeek structured parse &rarr; Google Places resolution &rarr; Routes computation &rarr;
-              map rendering and route registration.
+              Origin and destination &rarr; preference memory loaded &rarr; route corridor &rarr; Google Places stop search &rarr;
+              Routes ranking &rarr; DeepSeek explanations &rarr; recommendation cards and active route registration.
             </p>
           </article>
           <article class="runtime-flow reveal">
             <span>Flow B</span>
             <h3>Fatigue intervention</h3>
             <p>
-              Webcam score crosses threshold &rarr; active route loaded &rarr; rest stops searched ahead &rarr; driver
+              Webcam score crosses threshold &rarr; active road-trip route loaded &rarr; rest stops searched ahead &rarr; driver
               accepts stop &rarr; route recomputed with the stop.
             </p>
           </article>
@@ -537,8 +554,8 @@ sequenceDiagram
             <span>Flow C</span>
             <h3>Charging recommendation</h3>
             <p>
-              Battery level and route distance &rarr; XGBoost trip prediction &rarr; charger search near trigger
-              point &rarr; charging card &rarr; accepted charger inserted into route.
+              Battery level and road-trip distance &rarr; XGBoost prediction &rarr; charger search near trigger
+              point &rarr; charging card &rarr; accepted charger inserted into the road-trip route.
             </p>
           </article>
         </div>
@@ -562,7 +579,7 @@ sequenceDiagram
             />
             <figcaption>
               <span>Road trip planner</span>
-              Active route state, recommendation cards, Google Maps markers, and EV battery widget.
+              Active road-trip state, recommendation cards, Google Maps markers, and EV battery widget.
             </figcaption>
           </figure>
           <figure class="shot reveal">
@@ -576,7 +593,7 @@ sequenceDiagram
             <img src="./assets/battery-predictor.png" alt="Battery predictor panel with weekly driving chart" />
             <figcaption>
               <span>Battery predictor</span>
-              Trip battery estimate, weekday distance model, usage model, and weekly chart.
+              Road-trip battery estimate, weekday distance model, usage model, and weekly chart.
             </figcaption>
           </figure>
           <figure class="shot reveal">
@@ -599,17 +616,17 @@ sequenceDiagram
           <div class="stack-row reveal">
             <span>Frontend</span>
             <strong>Vanilla JavaScript, modular CSS, Google Maps JS API</strong>
-            <p>Focused browser modules for map rendering, trip actions, road trips, battery, and fatigue.</p>
+            <p>Focused browser modules for map rendering, road-trip actions, battery, and fatigue.</p>
           </div>
           <div class="stack-row reveal">
             <span>Backend</span>
             <strong>FastAPI, Uvicorn, REST APIs, WebSocket</strong>
-            <p>Router groups for maps, trip planner, central agent, battery, and fatigue detection.</p>
+            <p>Router groups for maps, road-trip planning, central agent, battery, and fatigue detection.</p>
           </div>
           <div class="stack-row reveal">
             <span>AI + ML</span>
             <strong>LangGraph, DeepSeek, XGBoost, MediaPipe FaceMesh</strong>
-            <p>State-machine decisions, language parsing, battery prediction, and live computer vision.</p>
+            <p>State-machine decisions, road-trip stop explanations, battery prediction, and live computer vision.</p>
           </div>
           <div class="stack-row reveal">
             <span>Data + Maps</span>
@@ -625,7 +642,7 @@ sequenceDiagram
         <strong>MEME</strong>
         <span>Mercedes Enhanced Mobility Engine</span>
       </div>
-      <p>Built by TehOlimauAis for a safer, more personal EV journey.</p>
+      <p>Built by TehOlimauAis for safer, more personal EV road trips.</p>
     </footer>
 
     <script src="./script.js"></script>
