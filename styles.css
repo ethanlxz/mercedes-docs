@@ -990,6 +990,11 @@ figcaption span {
     padding: 22px;
   }
 
+  .diagram-shell-road-trip .mermaid {
+    min-width: 540px;
+    padding: 18px;
+  }
+
   .diagram-shell-wide .mermaid {
     min-width: 840px;
   }
